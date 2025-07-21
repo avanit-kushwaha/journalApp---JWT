@@ -4,6 +4,7 @@ package com.avanit.journalApp.controller;
 import com.avanit.journalApp.entity.JournalEntry;
 import com.avanit.journalApp.entity.User;
 import com.avanit.journalApp.service.JournalEntryService;
+import com.avanit.journalApp.service.MailService;
 import com.avanit.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,10 @@ public class JournalEntryController {
 
     @Autowired
     private UserService userService;
+
+
+
+
     @GetMapping
     public ResponseEntity<?> getAllJournalEntriesOfUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -79,7 +84,7 @@ public class JournalEntryController {
 public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable Long myId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String username = authentication.getName();
-    User user = userService.findByUserName(username);
+    User user = userService.findByUserName(username);//user from db
 
     Optional<JournalEntry> journalEntryOpt = journalEntryService.findById(myId);
 

@@ -18,6 +18,9 @@ public class JournalEntryService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailService mailService;
 //    public void saveEntry(JournalEntry journalEntry, String userName){
 //
 //        User user=userService.findByUserName(userName);
@@ -36,8 +39,17 @@ public void saveEntry(JournalEntry journalEntry, String userName) {
     JournalEntry saved = journalEntryRepository.save(journalEntry);
 
     // if I maintain bidirectional mapping
-    user.getJournalEntries().add(saved);
+    user.getJournalEntries().add(saved); //sets the parent → child link.
     userService.saveUser(user); // only needed if I am persisting user changes
+
+    String subject = "Journal Entry Created";
+    String message = "Hi " + user.getUsername() + ",\n\n" +
+            "Your journal entry titled \"" + saved.getTitle() + "\" was created on " +
+            saved.getDate().toLocalDate() + ".\n\n" +
+            "Keep writing and reflecting!\n\n" +
+            "Journal App Team";
+
+    mailService.sendMail(user.getEmail(), subject, message);
 }
 
 
@@ -66,5 +78,7 @@ public void saveEntry(JournalEntry journalEntry, String userName) {
         return removed;
 
     }
+
+
 
 }
